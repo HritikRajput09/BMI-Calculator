@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthyLife — BMI & Wellness</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --coral:#FF6B6B;
+  --peach:#FF8E6E;
+  --gold:#FFD166;
+  --mint:#06D6A0;
+  --sky:#4ECDC4;
+  --navy:#1A1A2E;
+  --cream:#FFFBF5;
+  --warm:#FFF0E6;
+  --text:#2D2D2D;
+  --muted:#8A8A9A;
+  --white:#FFFFFF;
+  --r:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:grid;grid-template-columns:1fr 1fr;overflow:hidden}
+.hero-left{background:linear-gradient(135deg,#FF6B6B 0%,#FF8E6E 50%,#FFD166 100%);padding:70px 56px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.hero-left::before{content:'';position:absolute;width:500px;height:500px;background:rgba(255,255,255,0.07);border-radius:50%;top:-150px;right:-150px}
+.hero-left::after{content:'';position:absolute;width:300px;height:300px;background:rgba(255,255,255,0.05);border-radius:50%;bottom:-80px;left:20px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.2);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.3);color:#fff;font-size:11px;font-weight:700;letter-spacing:2.5px;padding:8px 18px;border-radius:100px;width:fit-content;margin-bottom:32px;text-transform:uppercase}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+h1{font-family:'Playfair Display',serif;font-size:clamp(56px,7vw,96px);font-weight:900;color:#fff;line-height:.9;margin-bottom:28px;position:relative;z-index:1}
+h1 em{font-style:italic;color:rgba(255,255,255,0.65)}
+.hero-sub{color:rgba(255,255,255,0.85);font-size:17px;font-weight:300;line-height:1.75;max-width:380px;position:relative;z-index:1;margin-bottom:44px}
+.hero-nums{display:flex;gap:36px;position:relative;z-index:1}
+.hn-val{font-family:'Playfair Display',serif;font-size:38px;font-weight:700;color:#fff;line-height:1}
+.hn-label{font-size:11px;color:rgba(255,255,255,0.65);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.hero-right{position:relative;overflow:hidden}
+.hero-right img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-right-overlay{position:absolute;inset:0;background:linear-gradient(to right,rgba(255,107,107,.3),transparent 55%),linear-gradient(to top,rgba(26,26,46,.45),transparent 55%)}
+.hero-float{position:absolute;bottom:44px;left:44px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);border-radius:18px;padding:22px 28px;box-shadow:0 24px 48px rgba(0,0,0,.14)}
+.hero-float p{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.hero-float strong{font-family:'Playfair Display',serif;font-size:20px;color:var(--text)}
+
+/* SECTION */
+.wrap{max-width:1160px;margin:0 auto;padding:80px 28px}
+.s-tag{display:inline-block;background:linear-gradient(135deg,var(--coral),var(--peach));color:#fff;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:6px 18px;border-radius:100px;margin-bottom:14px}
+.s-title{font-family:'Playfair Display',serif;font-size:clamp(34px,4vw,54px);font-weight:900;line-height:1.1;margin-bottom:14px}
+.s-title span{color:var(--coral)}
+.s-sub{color:var(--muted);font-size:16px;font-weight:300;line-height:1.7}
+
+/* FEATURES STRIP */
+.feat-strip{background:#fff;border-radius:24px;padding:36px;display:grid;grid-template-columns:repeat(4,1fr);box-shadow:0 8px 32px rgba(0,0,0,.05);margin-bottom:32px}
+.feat-item{padding:20px;text-align:center}
+.feat-item+.feat-item{border-left:1px solid #F0F0F5}
+.feat-icon{font-size:30px;margin-bottom:10px}
+.feat-name{font-weight:700;font-size:14px;margin-bottom:4px}
+.feat-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* CALC WRAPPER */
+.calc-wrap{background:#fff;border-radius:32px;overflow:hidden;box-shadow:0 40px 100px rgba(255,107,107,.1),0 0 0 1px rgba(255,107,107,.07);display:grid;grid-template-columns:1fr 1.25fr}
+.calc-side{position:relative;overflow:hidden;min-height:580px}
+.calc-side img{width:100%;height:100%;object-fit:cover;display:block}
+.calc-side-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(26,26,46,.1) 0%,rgba(255,107,107,.7) 100%)}
+.calc-side-text{position:absolute;bottom:0;left:0;right:0;padding:36px}
+.calc-side-quote{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:#fff;line-height:1.45;margin-bottom:10px}
+.calc-side-sub{color:rgba(255,255,255,.75);font-size:13px}
+.calc-form{padding:52px 44px}
+.cf-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-bottom:6px}
+.cf-sub{color:var(--muted);font-size:14px;margin-bottom:34px}
+
+/* UNIT TOGGLE */
+.unit-row{display:flex;gap:6px;background:#F4F4F8;border-radius:14px;padding:5px;margin-bottom:28px}
+.unit-btn{flex:1;padding:10px 8px;border:none;border-radius:10px;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;background:transparent;color:var(--muted);transition:all .25s}
+.unit-btn.on{background:#fff;color:var(--coral);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+
+/* FIELDS */
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.f1{margin-bottom:14px}
+.fl label{display:block;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.fl input,.fl select{width:100%;background:#F8F8FC;border:2px solid transparent;border-radius:14px;color:var(--text);font-family:'Outfit',sans-serif;font-size:16px;font-weight:500;padding:13px 16px;outline:none;transition:all .2s;-webkit-appearance:none;appearance:none}
+.fl input:focus,.fl select:focus{background:#fff;border-color:var(--coral);box-shadow:0 0 0 4px rgba(255,107,107,.09)}
+.fl input::placeholder{color:#C8C8D4}
+select option{background:#fff}
+
+/* ACTIVITY */
+.act-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.act-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:26px}
+.act-card{border:2px solid #ECECF4;border-radius:16px;padding:16px;cursor:pointer;transition:all .25s;background:#fff}
+.act-card:hover{border-color:var(--coral);background:#FFF6F5}
+.act-card.on{border-color:var(--coral);background:linear-gradient(135deg,#FFF2EF,#FFF9F7);box-shadow:0 8px 20px rgba(255,107,107,.11)}
+.act-icon{font-size:26px;margin-bottom:6px}
+.act-name{font-size:14px;font-weight:700;margin-bottom:2px;color:var(--text)}
+.act-desc{font-size:11px;color:var(--muted)}
+.act-card.on .act-name{color:var(--coral)}
+
+/* BUTTON */
+.go-btn{width:100%;padding:18px;background:linear-gradient(135deg,var(--coral),var(--peach));color:#fff;border:none;border-radius:16px;cursor:pointer;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;letter-spacing:.5px;box-shadow:0 12px 32px rgba(255,107,107,.32);transition:all .25s;position:relative;overflow:hidden}
+.go-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent)}
+.go-btn:hover{transform:translateY(-2px);box-shadow:0 18px 44px rgba(255,107,107,.42)}
+.go-btn:active{transform:translateY(0)}
+.err{color:var(--coral);font-size:13px;text-align:center;margin-bottom:12px;display:none;font-weight:500}
+.err.show{display:block}
+
+/* RESULTS */
+#results{opacity:0;transform:translateY(40px);transition:opacity .65s ease,transform .65s ease;pointer-events:none}
+#results.vis{opacity:1;transform:none;pointer-events:all}
+
+/* RESULT HERO */
+.res-hero{border-radius:32px;overflow:hidden;position:relative;margin-bottom:24px;min-height:320px;display:grid;grid-template-columns:1fr 1fr}
+.res-hero-left{padding:52px 48px;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1}
+.res-tag{display:inline-block;background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border-radius:100px;margin-bottom:16px;width:fit-content}
+.res-num{font-family:'Playfair Display',serif;font-size:96px;font-weight:900;color:#fff;line-height:.9;margin-bottom:8px}
+.res-cat{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:14px}
+.res-msg{color:rgba(255,255,255,.8);font-size:15px;font-weight:300;line-height:1.65;max-width:340px}
+.res-hero-right{position:relative;overflow:hidden}
+.res-hero-right img{width:100%;height:100%;object-fit:cover}
+.res-hero-right-ov{position:absolute;inset:0}
+
+/* SCALE */
+.scale-box{background:#fff;border-radius:24px;padding:36px 40px;box-shadow:0 8px 30px rgba(0,0,0,.05);margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.sb-left h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.sb-left p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:22px}
+.scale-track{height:12px;border-radius:12px;background:linear-gradient(to right,#4ECDC4 0%,#06D6A0 28%,#FFD166 55%,#FF8E6E 76%,#FF6B6B 100%);position:relative;margin-bottom:10px}
+.scale-dot{position:absolute;top:50%;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--coral);transform:translate(-50%,-50%);box-shadow:0 4px 12px rgba(0,0,0,.18);transition:left .8s cubic-bezier(.34,1.56,.64,1)}
+.scale-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat-card{background:#F8F8FC;border-radius:16px;padding:20px;text-align:center}
+.stat-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--coral);line-height:1;margin-bottom:4px}
+.stat-lbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+
+/* WATER */
+.water-box{background:#fff;border-radius:24px;padding:36px 40px;box-shadow:0 8px 30px rgba(0,0,0,.05);margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.wb-left h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:8px}
+.wb-left p{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:20px}
+.water-big{display:flex;align-items:baseline;gap:8px}
+.water-num{font-family:'Playfair Display',serif;font-size:60px;font-weight:900;color:#4ECDC4;line-height:1}
+.water-unit{font-size:18px;color:var(--muted);font-weight:300}
+.water-note{font-size:12px;color:var(--muted);margin-top:6px;margin-bottom:16px;line-height:1.5}
+.glasses{display:flex;gap:5px;flex-wrap:wrap}
+.glass{width:26px;height:34px;border-radius:2px 2px 6px 6px;border:2px solid #4ECDC4;background:rgba(78,205,196,.18);position:relative;overflow:hidden}
+.glass::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60%;background:#4ECDC4;opacity:.38}
+.water-img{border-radius:20px;overflow:hidden;height:220px}
+.water-img img{width:100%;height:100%;object-fit:cover}
+
+/* ADVICE */
+.advice-h{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:20px}
+.advice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px}
+.acard{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.06);transition:transform .25s,box-shadow .25s}
+.acard:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(0,0,0,.1)}
+.acard-img{height:168px;overflow:hidden;position:relative}
+.acard-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.acard:hover .acard-img img{transform:scale(1.06)}
+.acard-img-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.28),transparent)}
+.acard-body{padding:24px}
+.acard-body h4{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:12px}
+.alist{list-style:none;display:flex;flex-direction:column;gap:8px}
+.alist li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--muted);line-height:1.5}
+.alist li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--coral);flex-shrink:0;margin-top:5px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.pill{background:var(--warm);border-radius:100px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--coral)}
+
+/* MOTIVATION */
+.motive{border-radius:24px;overflow:hidden;position:relative;min-height:200px;margin-bottom:24px}
+.motive img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.motive-ov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,107,107,.86),rgba(255,209,102,.76))}
+.motive-body{position:relative;z-index:1;padding:52px 56px;display:flex;align-items:center;justify-content:space-between;gap:40px}
+.motive-quote{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,36px);font-weight:700;color:#fff;line-height:1.3;max-width:620px}
+.motive-sub{color:rgba(255,255,255,.82);font-size:14px;font-weight:300;margin-top:10px;line-height:1.6}
+.motive-icon{font-size:72px;flex-shrink:0;filter:drop-shadow(0 6px 14px rgba(0,0,0,.2))}
+
+/* FOOTER */
+footer{background:var(--navy);color:rgba(255,255,255,.55);text-align:center;padding:40px 20px;font-size:13px;line-height:1.7}
+footer strong{color:var(--coral)}
+
+/* ANIMS */
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.hero-left>*{animation:up .75s ease both}
+.hero-left>*:nth-child(1){animation-delay:.1s}
+.hero-left>*:nth-child(2){animation-delay:.25s}
+.hero-left>*:nth-child(3){animation-delay:.4s}
+.hero-left>*:nth-child(4){animation-delay:.55s}
+.hero-left>*:nth-child(5){animation-delay:.7s}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .calc-wrap{grid-template-columns:1fr}
+  .calc-side{display:none}
+  .res-hero{grid-template-columns:1fr}
+  .res-hero-right{display:none}
+  .scale-box{grid-template-columns:1fr}
+  .water-box{grid-template-columns:1fr}
+  .water-img{display:none}
+  .advice-grid{grid-template-columns:1fr 1fr}
+  .feat-strip{grid-template-columns:1fr 1fr}
+}
+@media(max-width:580px){
+  .hero-left{padding:44px 24px}
+  .wrap{padding:50px 18px}
+  .calc-form{padding:36px 22px}
+  .res-hero-left{padding:36px 26px}
+  .scale-box,.water-box{padding:28px 22px}
+  .motive-body{flex-direction:column;padding:38px 28px}
+  .advice-grid{grid-template-columns:1fr}
+  .feat-strip{grid-template-columns:1fr}
+  .f2{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="badge"><span class="badge-dot"></span>Your Health, Elevated</div>
+    <h1>Healthy<br><em>Life</em></h1>
+    <p class="hero-sub">Understand your body. Get personalized fitness guidance, nutrition advice, and hydration goals — all in one beautiful place.</p>
+    <div class="hero-nums">
+      <div><div class="hn-val">4</div><div class="hn-label">BMI Ranges</div></div>
+      <div><div class="hn-val">100%</div><div class="hn-label">Personalized</div></div>
+      <div><div class="hn-val">Free</div><div class="hn-label">Always</div></div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=960&q=85&fit=crop" alt="Fitness">
+    <div class="hero-right-overlay"></div>
+    <div class="hero-float">
+      <p>Start your journey</p>
+      <strong>Calculate below ↓</strong>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULATOR -->
+<div class="wrap">
+  <div style="text-align:center;margin-bottom:48px">
+    <div class="s-tag">BMI Calculator</div>
+    <h2 class="s-title">Know Your <span>Numbers</span></h2>
+    <p class="s-sub" style="margin:0 auto;max-width:480px">Fill in your details for a complete wellness picture — fitness tips, nutrition, and hydration all included.</p>
+  </div>
+
+  <div class="feat-strip">
+    <div class="feat-item"><div class="feat-icon">⚡</div><div class="feat-name">Instant Results</div><div class="feat-desc">Score in seconds</div></div>
+    <div class="feat-item"><div class="feat-icon">🎯</div><div class="feat-name">Personalized Tips</div><div class="feat-desc">Based on your data</div></div>
+    <div class="feat-item"><div class="feat-icon">💧</div><div class="feat-name">Hydration Guide</div><div class="feat-desc">Daily water goals</div></div>
+    <div class="feat-item"><div class="feat-icon">🏋️</div><div class="feat-name">Workout Plans</div><div class="feat-desc">Fit for your level</div></div>
+  </div>
+
+  <div class="calc-wrap">
+    <div class="calc-side">
+      <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=640&q=85&fit=crop" alt="Workout">
+      <div class="calc-side-overlay"></div>
+      <div class="calc-side-text">
+        <div class="calc-side-quote">"Your body can do it. It's your mind you need to convince."</div>
+        <div class="calc-side-sub">Every great journey starts with a single measurement.</div>
+      </div>
+    </div>
+    <div class="calc-form">
+      <div class="cf-title">Let's get started</div>
+      <div class="cf-sub">Enter your details for a full wellness breakdown</div>
+      <div class="unit-row">
+        <button class="unit-btn on" id="btn-m" onclick="setUnit('metric')">⚖️ Metric (kg / cm)</button>
+        <button class="unit-btn" id="btn-i" onclick="setUnit('imperial')">🇺🇸 Imperial (lb / ft)</button>
+      </div>
+      <div class="f2">
+        <div class="fl"><label>Age</label><input type="number" id="age" placeholder="e.g. 25"></div>
+        <div class="fl"><label>Gender</label><select id="gender"><option value="male">Male</option><option value="female">Female</option><option value="other">Prefer not to say</option></select></div>
+      </div>
+      <div id="mf">
+        <div class="f2">
+          <div class="fl"><label>Height (cm)</label><input type="number" id="hcm" placeholder="e.g. 170"></div>
+          <div class="fl"><label>Weight (kg)</label><input type="number" id="wkg" placeholder="e.g. 70"></div>
+        </div>
+      </div>
+      <div id="imf" style="display:none">
+        <div class="f2">
+          <div class="fl"><label>Height (ft)</label><input type="number" id="hft" placeholder="e.g. 5.7" step="0.1"></div>
+          <div class="fl"><label>Weight (lb)</label><input type="number" id="wlb" placeholder="e.g. 154"></div>
+        </div>
+      </div>
+      <div class="act-label">How active are you?</div>
+      <div class="act-grid">
+        <div class="act-card on" id="aa" onclick="setAct('active')">
+          <div class="act-icon">🏃‍♂️</div>
+          <div class="act-name">Active</div>
+          <div class="act-desc">Exercise 3–5× per week</div>
+        </div>
+        <div class="act-card" id="as" onclick="setAct('sed')">
+          <div class="act-icon">🛋️</div>
+          <div class="act-name">Sedentary</div>
+          <div class="act-desc">Little or no exercise</div>
+        </div>
+      </div>
+      <p class="err" id="err">⚠️ Please fill in all fields with valid values.</p>
+      <button class="go-btn" onclick="go()">Calculate My Wellness Score ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="wrap" style="padding-top:0">
+  <div id="results">
+
+    <!-- BMI Big Result -->
+    <div class="res-hero" id="rh">
+      <div class="res-hero-left">
+        <div class="res-tag" id="rtag">Your Result</div>
+        <div class="res-num" id="rnum">—</div>
+        <div class="res-cat" id="rcat">—</div>
+        <div class="res-msg" id="rmsg">—</div>
+      </div>
+      <div class="res-hero-right">
+        <img id="rimg" src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=640&q=80" alt="Result">
+        <div class="res-hero-right-ov" id="rov"></div>
+      </div>
+    </div>
+
+    <!-- Scale + Stats -->
+    <div class="scale-box">
+      <div class="sb-left">
+        <h3>Where you stand</h3>
+        <p id="sdesc">Your BMI on the wellness spectrum — the dot shows exactly where you fall.</p>
+        <div class="scale-track"><div class="scale-dot" id="sdot" style="left:0%"></div></div>
+        <div class="scale-labels">
+          <span>Underweight<br>&lt;18.5</span>
+          <span>Normal<br>18.5–25</span>
+          <span>Overweight<br>25–30</span>
+          <span>Obese<br>30+</span>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-val" id="sv-bmi">—</div><div class="stat-lbl">BMI Score</div></div>
+        <div class="stat-card"><div class="stat-val" id="sv-ideal">—</div><div class="stat-lbl">Ideal Weight</div></div>
+        <div class="stat-card"><div class="stat-val" id="sv-cal">—</div><div class="stat-lbl">Daily Calories</div></div>
+        <div class="stat-card"><div class="stat-val" id="sv-bmr">—</div><div class="stat-lbl">BMR</div></div>
+      </div>
+    </div>
+
+    <!-- Water -->
+    <div class="water-box">
+      <div class="wb-left">
+        <h3>💧 Daily Hydration</h3>
+        <p>Based on your weight and activity level — here's how much water your body needs daily.</p>
+        <div class="water-big">
+          <div class="water-num" id="wnum">—</div>
+          <div class="water-unit">litres / day</div>
+        </div>
+        <div class="water-note" id="wnote"></div>
+        <div class="glasses" id="glasses"></div>
+      </div>
+      <div class="water-img">
+        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&q=80&fit=crop" alt="Hydration">
+      </div>
+    </div>
+
+    <!-- Advice Cards -->
+    <div class="advice-h">Your Personalized Plan</div>
+    <div class="advice-grid" id="adv"></div>
+
+    <!-- Motivation Banner -->
+    <div class="motive">
+      <img src="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1400&q=80&fit=crop&crop=center" alt="Motivation">
+      <div class="motive-ov"></div>
+      <div class="motive-body">
+        <div>
+          <div class="motive-quote" id="mq">Every champion was once a contender who refused to give up.</div>
+          <div class="motive-sub" id="ms">Your journey starts today. One step, one meal, one choice at a time.</div>
+        </div>
+        <div class="motive-icon" id="mi">🔥</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <strong>HealthyLife</strong> &nbsp;·&nbsp; BMI is a screening tool, not a medical diagnosis.<br>Always consult a qualified healthcare professional before making health decisions.
+</footer>
+
+<script>
+let unit='metric',act='active';
+
+function setUnit(u){
+  unit=u;
+  document.getElementById('mf').style.display=u==='metric'?'block':'none';
+  document.getElementById('imf').style.display=u==='imperial'?'block':'none';
+  document.getElementById('btn-m').classList.toggle('on',u==='metric');
+  document.getElementById('btn-i').classList.toggle('on',u==='imperial');
+}
+
+function setAct(a){
+  act=a;
+  document.getElementById('aa').classList.toggle('on',a==='active');
+  document.getElementById('as').classList.toggle('on',a==='sed');
+}
+
+function go(){
+  const age=parseFloat(document.getElementById('age').value);
+  const gender=document.getElementById('gender').value;
+  let hCm,wKg;
+  if(unit==='metric'){
+    hCm=parseFloat(document.getElementById('hcm').value);
+    wKg=parseFloat(document.getElementById('wkg').value);
+  }else{
+    hCm=parseFloat(document.getElementById('hft').value)*30.48;
+    wKg=parseFloat(document.getElementById('wlb').value)*0.453592;
+  }
+  const e=document.getElementById('err');
+  if(!age||!hCm||!wKg||age<1||hCm<50||wKg<10){e.classList.add('show');return}
+  e.classList.remove('show');
+
+  const hM=hCm/100, bmi=wKg/(hM*hM);
+
+  let cat,bg,msg,img,sdesc,tag,dcolor;
+  if(bmi<18.5){
+    cat='Underweight';bg='linear-gradient(135deg,#4ECDC4,#06D6A0)';dcolor='#4ECDC4';
+    msg='Your body is asking for more nourishment. Focus on building strength through regular meals and healthy calorie-rich foods.';
+    img='https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=700&q=80&fit=crop';
+    sdesc='You\'re below the healthy range. Small consistent dietary habits will make a big difference.';tag='Below Healthy Range';
+  }else if(bmi<25){
+    cat='Healthy Weight';bg='linear-gradient(135deg,#06D6A0,#4ECDC4)';dcolor='#06D6A0';
+    msg='You\'re in an excellent range! Your body is thriving — keep fueling great habits and staying consistent.';
+    img='https://images.unsplash.com/photo-1554284126-aa88f22d8b74?w=700&q=80&fit=crop';
+    sdesc='You\'re right where you should be. Maintaining this range is a sign of wonderful healthy habits.';tag='In the Healthy Zone';
+  }else if(bmi<30){
+    cat='Overweight';bg='linear-gradient(135deg,#FFD166,#FF8E6E)';dcolor='#FFD166';
+    msg='You\'re slightly above the ideal range. Consistent movement and mindful eating will bring you back on track.';
+    img='https://images.unsplash.com/photo-1518644961665-ed172691aaa1?w=700&q=80&fit=crop';
+    sdesc='You\'re a little above the healthy zone. Gradual lifestyle changes are the most sustainable path forward.';tag='Above Healthy Range';
+  }else{
+    cat='Obese';bg='linear-gradient(135deg,#FF6B6B,#FF8E6E)';dcolor='#FF6B6B';
+    msg='Now is the perfect time to prioritize your health. Start small, be kind to yourself, and build momentum every day.';
+    img='https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=700&q=80&fit=crop';
+    sdesc='Your health will benefit greatly from lifestyle changes. Every positive step you take truly counts.';tag='Health Action Needed';
+  }
+
+  let ideal=gender==='male'?50+2.3*((hCm/2.54)-60):45.5+2.3*((hCm/2.54)-60);
+  ideal=Math.max(ideal,40);
+  let bmr=gender==='male'?10*wKg+6.25*hCm-5*age+5:10*wKg+6.25*hCm-5*age-161;
+  const tdee=Math.round(bmr*(act==='active'?1.55:1.2));
+  const water=wKg*0.033+(act==='active'?0.5:0);
+  const gc=Math.round(water/0.25);
+  const pct=Math.min(100,Math.max(0,((bmi-15)/25)*100));
+
+  // DOM
+  document.getElementById('rh').style.background=bg;
+  document.getElementById('rtag').textContent=tag;
+  document.getElementById('rnum').textContent=bmi.toFixed(1);
+  document.getElementById('rcat').textContent=cat;
+  document.getElementById('rmsg').textContent=msg;
+  document.getElementById('rimg').src=img;
+  document.getElementById('rov').style.background=`linear-gradient(to right,${dcolor}66 0%,transparent 60%)`;
+  document.getElementById('sdesc').textContent=sdesc;
+  document.getElementById('sv-bmi').textContent=bmi.toFixed(1);
+  document.getElementById('sv-ideal').textContent=ideal.toFixed(0)+'kg';
+  document.getElementById('sv-cal').textContent=tdee.toLocaleString();
+  document.getElementById('sv-bmr').textContent=Math.round(bmr).toLocaleString();
+  document.getElementById('wnum').textContent=water.toFixed(1);
+  document.getElementById('wnote').textContent=`That's about ${gc} glasses (250ml each)${act==='active'?' — active lifestyle bonus included 🏃':''}`;
+  const gc2=document.getElementById('glasses');
+  gc2.innerHTML='';
+  for(let i=0;i<Math.min(gc,18);i++){const g=document.createElement('div');g.className='glass';gc2.appendChild(g)}
+
+  renderAdv(bmi);
+  renderMotive(bmi);
+
+  setTimeout(()=>document.getElementById('sdot').style.left=pct+'%',250);
+  const r=document.getElementById('results');
+  r.classList.add('vis');
+  setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'start'}),350);
+}
+
+function renderAdv(bmi){
+  const c=document.getElementById('adv');c.innerHTML='';
+  let d;
+  if(bmi<18.5){
+    d=[
+      {img:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80&fit=crop',title:'Build & Strengthen',pills:['🏋️ Weights','🤸 Bodyweight','🚶 Walking','🧘 Yoga'],items:['Weight training 3× per week to build muscle mass','Bodyweight exercises — push-ups, squats, lunges daily','Brisk 30-min walks to boost appetite and mood','Gentle yoga to improve flexibility and recovery']},
+      {img:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80&fit=crop',title:'Nourish & Fuel',pills:[],items:['Eat at least 3 full meals every day — never skip breakfast','Add calorie-dense foods: nuts, avocado, olive oil, whole grains','Aim for 1.4–1.6g of protein per kg of body weight daily','Include dairy, eggs, legumes and healthy fats every single day']},
+      {img:'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=80&fit=crop',title:'Rest & Restore',pills:[],items:['Sleep 7–9 hours for optimal hormone balance and recovery','Track meals to ensure you\'re hitting daily calorie goals','Reduce stress — high cortisol suppresses appetite significantly','Take progress photos every 2 weeks to see your transformation']}
+    ];
+  }else if(bmi<25){
+    d=[
+      {img:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80&fit=crop',title:'Keep Your Edge',pills:['🏃 Running','💪 Strength','🏊 Swimming','⚡ HIIT'],items:['Cardio running 30 min, 4× per week for heart health','Strength training 3× per week to preserve muscle tone','Swimming or cycling for low-impact full-body conditioning','HIIT sessions to boost metabolism and build endurance']},
+      {img:'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&q=80&fit=crop',title:'Balanced Nutrition',pills:[],items:['Balanced plate: 50% veg, 25% protein, 25% complex carbs','Keep processed sugar under 10% of your daily intake','Prioritize whole, minimally processed foods every day','Post-workout protein within 30–45 minutes of exercise']},
+      {img:'https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=600&q=80&fit=crop',title:'Thrive & Grow',pills:[],items:['Set new fitness challenges — a race, a new skill, a PR','Prioritize quality sleep for performance and mood recovery','Practice mindfulness or meditation for mental resilience','Celebrate your consistency — you have truly earned it!']}
+    ];
+  }else if(bmi<30){
+    d=[
+      {img:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop',title:'Get Moving',pills:['🚶 Power Walk','🏊 Swimming','🚴 Cycling','🧘 Yoga'],items:['45-minute power walks daily — the most underrated fat burner','Swimming 3× per week for full-body low-impact cardio','Cycling 30 min, 5× per week for consistent calorie burn','Yoga flow to reduce cortisol and improve mobility']},
+      {img:'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=600&q=80&fit=crop',title:'Eat Smarter',pills:[],items:['Create a 300–500 kcal daily deficit through diet and exercise','Replace refined carbs with oats, quinoa and sweet potato','Fill half your plate with non-starchy vegetables every meal','Cut sugary drinks entirely — replace with water and herbal teas']},
+      {img:'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&q=80&fit=crop',title:'Build Momentum',pills:[],items:['Track your food for 2 weeks — awareness transforms everything','Schedule workouts in your calendar like important meetings','Find a workout buddy or accountability partner to stay on track','Celebrate every 0.5kg lost — all progress matters equally']}
+    ];
+  }else{
+    d=[
+      {img:'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=600&q=80&fit=crop',title:'Start Your Journey',pills:['🚶 Walking','🏊 Water Aerobics','🚴 Bike','🧘 Chair Yoga'],items:['Begin with 20–30 min daily walks, gradually build to 60 min','Water aerobics 3× per week — gentle on joints, highly effective','Stationary bike 20 min daily to build a solid fitness base','Chair yoga and light stretching to improve mobility and mood']},
+      {img:'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80&fit=crop',title:'Transform Your Plate',pills:[],items:['Consult a registered nutritionist for a personalized meal plan','Start by reducing portion sizes 20% — use a smaller plate','Eliminate sugary drinks immediately — this alone transforms results','Add protein to every meal to stay full and preserve muscle']},
+      {img:'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=600&q=80&fit=crop',title:'Mindset Shift',pills:[],items:['Speak to your doctor before starting a new exercise program','Set small achievable weekly goals, not overwhelming monthly ones','Track non-scale victories: energy, sleep quality, mood, mobility','Be patient and compassionate with yourself — this takes real time']}
+    ];
+  }
+
+  d.forEach(card=>{
+    const el=document.createElement('div');el.className='acard';
+    el.innerHTML=`
+      <div class="acard-img"><img src="${card.img}" alt="${card.title}" loading="lazy"><div class="acard-img-ov"></div></div>
+      <div class="acard-body">
+        <h4>${card.title}</h4>
+        ${card.pills.length?`<div class="pills">${card.pills.map(p=>`<span class="pill">${p}</span>`).join('')}</div>`:''}
+        <ul class="alist">${card.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+      </div>`;
+    c.appendChild(el);
+  });
+}
+
+function renderMotive(bmi){
+  const Q=[
+    {q:'The groundwork for all happiness is good health.',s:'Your body is the only place you will ever truly live — treat it accordingly.',i:'🌱'},
+    {q:'Take care of your body. It\'s the only place you have to live.',s:'You\'re in the healthy zone. Keep feeding this incredible machine.',i:'⭐'},
+    {q:'The secret of getting ahead is simply getting started.',s:'Consistent small improvements compound into extraordinary results.',i:'💪'},
+    {q:'A year from now you will wish you had started today.',s:'The hardest step is always the first. You\'ve already taken it by being here.',i:'🔥'}
+  ];
+  const idx=bmi<18.5?0:bmi<25?1:bmi<30?2:3;
+  document.getElementById('mq').textContent=Q[idx].q;
+  document.getElementById('ms').textContent=Q[idx].s;
+  document.getElementById('mi').textContent=Q[idx].i;
+}
+</script>
+</body>
+</html>
